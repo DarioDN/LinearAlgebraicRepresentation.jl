@@ -2,7 +2,7 @@ using LinearAlgebraicRepresentation, ViewerGL
 Lar = LinearAlgebraicRepresentation
 GL = ViewerGL
 
-filename = "/Users/paoluzzi/Documents/dev/Plasm.jl/test/svg/Lar.svg"
+filename = "/home/dario/Plasm.jl/test/svg/Lar.svg"
 V,EV = Lar.svg2lar(filename)
 
 GL.VIEW([

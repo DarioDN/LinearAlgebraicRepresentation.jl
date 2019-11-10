@@ -157,21 +157,27 @@ function minimal_cycles(angles_fn::Function, verbose=false)
 
 
         while (sigma = get_seed_cell()) > 0
+			@show sigma
 			if verbose
                 print(Int(floor(50 * sum(count_marks) / ld_cellsnum)), "%\r")
             end
-
+			@show ld_cellsnum
             c_ld = spzeros(Int8, ld_cellsnum)
+			@show c_ld
             if count_marks[sigma] == 0
                 c_ld[sigma] = 1
             else
                 c_ld[sigma] = -dir_marks[sigma]
             end
             c_lld = ld_bounds*c_ld
+			@show c_lld
             while c_lld.nzind != []
+				@show c_lld.nzind
 				#corolla = spzeros(Int8, ld_cellsnum)
 				corolla = zeros(Int64, ld_cellsnum)
                 for tau in c_lld.nzind
+					@show ("$tau")
+					# @show tau
                     b_ld = ld_bounds[tau, :]
                     pivot = intersect(c_ld.nzind, b_ld.nzind)[1]
                     adj = nextprev(tau, pivot, sign(-c_lld[tau]))
