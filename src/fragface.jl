@@ -6,17 +6,30 @@ using LinearAlgebra
 Compute the `mapping` matrix to transform `sigma` and faces in `sp_idx[sigma]` to ``z=0``.
 """
 function face_mapping( V, FV, sigma, err=10e-8 )
+	#@show V
+	#@show typeof(V)
 	vs = FV[sigma]; i = 1
 	# compute affinely independent triple
 	n = length(vs)
 	succ(i) = i % n + 1
-	a = Lar.normalize(V[:,vs[succ(i)]] - V[:,vs[i]])
-	b = Lar.normalize(V[:,vs[succ(succ(i))]] - V[:,vs[i]])
+	#@show(V[:,vs[succ(i)]] - V[:,vs[i]])
+	#@show typeof(V[:,vs[succ(i)]] - V[:,vs[i]])
+	M = V[:,vs[succ(i)]] - V[:,vs[i]]
+	N = V[:,vs[succ(succ(i))]] - V[:,vs[i]]
+	#m = M[:,:]
+	#n = N[:,:]
+	#@show m
+	#@show n
+	a = LinearAlgebra.normalize(V[:,vs[succ(i)]] - V[:,vs[i]])#modificata per utilizzare normalize di LinearAlgebra
+	#a = Lar.normalize(m)
+	b = LinearAlgebra.normalize(V[:,vs[succ(succ(i))]] - V[:,vs[i]])#modificata per utilizzare normalize di LinearAlgebra
+	#b = Lar.normalize2(n)
 	c = cross(a,b)
-	while (-err < det([a b c]) < err) 
+	@show c
+	while (-err < det([a b c]) < err)
 		i += 1
-		a = Lar.normalize(V[:,vs[succ(i)]] - V[:,vs[i]])
-		b = Lar.normalize(V[:,vs[succ(succ(i))]] - V[:,vs[i]])
+		a = LinearAlgebra.normalize(V[:,vs[succ(i)]] - V[:,vs[i]])#modificata per utilizzare normalize di LinearAlgebra
+		b = LinearAlgebra.normalize(V[:,vs[succ(succ(i))]] - V[:,vs[i]])#modificata per utilizzare normalize di LinearAlgebra
 		c = LinearAlgebra.cross(a,b)
 	end
 	# sigma translation
@@ -34,7 +47,7 @@ end
 
 
 """
-	sigmamodel(V::Lar.Points, copEV::Lar.ChainOP, FV::Lar.Cells, copFE::Lar.ChainOP, 
+	sigmamodel(V::Lar.Points, copEV::Lar.ChainOP, FV::Lar.Cells, copFE::Lar.ChainOP,
 		sigma::Int, sp_idx::Array)
 
 Transform `sigma` and `sp_idx[sigma]` faces to ``z=0`` space.
@@ -74,19 +87,19 @@ function sigma_intersect(V, EV, FE, sigma, Q, bigpi)
 	# initialization of line storage (to be intersected)
 	linestore = [[Z[:,v1] Z[:,v2]] for (v1,v2) in sigma_lines]
 	linenum = length(sigma_lines)
-	# reindexing of ∏(σ) chain 
+	# reindexing of ∏(σ) chain
 	bigpi_edges = [EV[fe] for fe in FE[bigpi]]
 	bigpi_verts = union(union(bigpi_edges...)...)
 	bigpi_vdict =  Dict(zip(bigpi_verts, 1:length(bigpi_verts)))
-	bigpi_lines = [[sort([bigpi_vdict[v] for v in edge]) for edge in faceedges] 
+	bigpi_lines = [[sort([bigpi_vdict[v] for v in edge]) for edge in faceedges]
 		for faceedges in bigpi_edges]
 	# bigpi trasformed in 3D according to Q mapping  ==> BUG ??!! :  NO
 	P = V[:,bigpi_verts] # bigpi vertices
 	W = (Q * [P; ones(1,size(P,2))])[1:3,:] # bigpi mapped by Q
 	#Plasm.view(W, union(bigpi_lines...))
 	# filter on bigpi_lines that do not cross z=0
-	filtered_edges = [[[v1,v2] for (v1,v2) in face_lines 
-		if (sign(W[3,v1]) * sign(W[3,v2])) <= 0] 
+	filtered_edges = [[[v1,v2] for (v1,v2) in face_lines
+		if (sign(W[3,v1]) * sign(W[3,v2])) <= 0]
 			for face_lines in bigpi_lines]
 	filtered_edges = [edge for edge in filtered_edges if edge!=[]]
 	#Plasm.view(W, union(filtered_edges...))
@@ -100,7 +113,7 @@ function sigma_intersect(V, EV, FE, sigma, Q, bigpi)
 			if (W[3,v2] - W[3,v1]) != 0
 				t = -W[3,v1] / (W[3,v2] - W[3,v1])  # z1 + (z2-z1)*t = 0
 				point = W[:,v1] + (W[:,v2] - W[:,v1]) * t
-				push!(points,point) 
+				push!(points,point)
 			end
 		end
 		if length(Set(points)) > 1
@@ -112,7 +125,6 @@ function sigma_intersect(V, EV, FE, sigma, Q, bigpi)
 	# compute z_lines
 	c = collect
 	z0_lines = [[[c(ps)[k] c(ps)[k+1]] for k=1:2:(length(ps)-1)] for ps in facepoints]
-	
 	# intersecting lines upload in linestore
 	linestore = [[Z[:,v1] Z[:,v2]] for (v1,v2) in sigma_lines]
 	if z0_lines != []
@@ -129,6 +141,7 @@ end
 Intersect all (non-simmetric) pairs of `line` in `linestore`.
 """
 function computeparams(linestore,linenum)
+	#ϵ = 0,001
 	m = length(linestore)
 	params = [[] for i=1:m]
 	for h=1:(m-1)
@@ -168,23 +181,24 @@ function computeparams(linestore,linenum)
 		push!(line, 1.0)
 		line = sort(collect(Set(line)))
 		push!(out, line)
-	end	
+	end
 	return out
 end
 
 
 """
-	fragface(V::Lar.Points, EV::Lar.Cells, FV::Lar.Cells, FE::Lar.Cells, 
+	fragface(V::Lar.Points, EV::Lar.Cells, FV::Lar.Cells, FE::Lar.Cells,
 		sp_idx::Array, sigma::Int)::Lar.LAR
-	
+
 """
 function fragface(V, cop_EV, cop_FE, sp_idx, sigma)
 	# format conversion of function parameters
 	EV = [findnz(cop_EV[k,:])[1] for k=1:size(cop_EV,1)]
 	FE = [findnz(cop_FE[k,:])[1] for k=1:size(cop_FE,1)]
 	FV = [collect(Set(cat(EV[e] for e in FE[f]))) for f=1:length(FE)]
+	@show FV
 	V = convert(Lar.Points, V')
-	
+
 	Q = face_mapping(V, FV, sigma)
 	bigpi = sp_idx[sigma]
 	linestore, linenum = sigma_intersect(V, EV, FE, sigma, Q, bigpi)
@@ -198,7 +212,7 @@ function fragface(V, cop_EV, cop_FE, sp_idx, sigma)
 		if params==[0.0, 1.0]
 			points = [v1,v2]
 			if k<=linenum number += 1 end
-		elseif length(params)>2 
+		elseif length(params)>2
 			points = [v1+α*(v2-v1) for α ∈ params]
 			if k<=linenum number += length(params)-1 end
 		end
@@ -213,10 +227,17 @@ function fragface(V, cop_EV, cop_FE, sp_idx, sigma)
 		append!(edges, [[k+offset,k+1+offset] for k=1:length(pointline)-1])
 		offset = length(verts)
 	end
-	#verts = hcat(verts...)
-	#verts = convert(Lar.Points,verts')
+	verts = hcat(verts...)#linea commentata nel codice originale
+	verts = convert(Lar.Points,verts')#linea commentata nel codice originale
+	faces = FV #abbiamo provato ad assegnare FV a faces per popolare tale variabile per eseguire Lar.coboundary_1
+	#@show verts
+	#@show edges
+	#@show faces
 	copEV = Lar.coboundary_0(convert(Lar.Cells,edges))
-	copFE = Lar.coboundary_1(verts,faces,edges)
+	#copFE = Lar.coboundary_1(verts,faces,edges)  #linea di codice originale
+	copFE = Lar.coboundary_1(verts,convert(Lar.Cells,faces),convert(Lar.Cells,edges)) #versione modificata da noi, produce ERROR: DimensionMismatch("")
+	#@show verts
+	#@show copEV
+	#@show copFE
 	return verts, copEV, copFE
 end
-

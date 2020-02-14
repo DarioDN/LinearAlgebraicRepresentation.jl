@@ -7,6 +7,7 @@ module LinearAlgebraicRepresentation
 	using SparseArrays
 	using LinearAlgebra
 	using Distributed
+	#using BitFloats #tentativo per HOMEWORK2 andato a male
 	Lar = LinearAlgebraicRepresentation
 
 	"""

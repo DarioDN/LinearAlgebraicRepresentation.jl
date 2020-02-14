@@ -279,26 +279,26 @@ Sigma
 """
 function spaceindex(model::Lar.LAR)::Array{Array{Int,1},1}
 	V,CV = model[1:2]
-	dim = size(V,1)
-	cellpoints = [ V[:,CV[k]]::Lar.Points for k=1:length(CV) ]
+	dim = size(V,1)#num di righe della matrice dei vertici
+	cellpoints = [ V[:,CV[k]]::Lar.Points for k=1:length(CV) ]#costruiamo matrice[array di matrice] con i soli vertici di ogni cella
 	#----------------------------------------------------------
-	bboxes = [hcat(Lar.boundingbox(cell)...) for cell in cellpoints]
-	xboxdict = Lar.coordintervals(1,bboxes)
-	yboxdict = Lar.coordintervals(2,bboxes)
+	bboxes = [hcat(Lar.boundingbox(cell)...) for cell in cellpoints]#bounfing boxes
+	xboxdict = Lar.coordintervals(1,bboxes)#intervalli in dir x
+	yboxdict = Lar.coordintervals(2,bboxes)#dir y
 	# xs,ys are IntervalTree type
-	xs = IntervalTrees.IntervalMap{Float64, Array}()
-	for (key,boxset) in xboxdict
-		xs[tuple(key...)] = boxset
+	xs = IntervalTrees.IntervalMap{Float64, Array}()#inizializz. vuota
+	for (key,boxset) in xboxdict#per ogni coppia chiave valore
+		xs[tuple(key...)] = boxset#passa per ogni elem la chiave(?)
 	end
 	ys = IntervalTrees.IntervalMap{Float64, Array}()
 	for (key,boxset) in yboxdict
 		ys[tuple(key...)] = boxset
 	end
-	xcovers = Lar.boxcovering(bboxes, 1, xs)
+	xcovers = Lar.boxcovering(bboxes, 1, xs)#query
 	ycovers = Lar.boxcovering(bboxes, 2, ys)
-	covers = [intersect(pair...) for pair in zip(xcovers,ycovers)]
+	covers = [intersect(pair...) for pair in zip(xcovers,ycovers)]#indici dei bboxes attraversati dagli oggetti considerati
 
-	if dim == 3
+	if dim == 3#se dim 3 stesse cose su z
 		zboxdict = Lar.coordintervals(3,bboxes)
 		zs = IntervalTrees.IntervalMap{Float64, Array}()
 		for (key,boxset) in zboxdict

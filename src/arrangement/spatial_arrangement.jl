@@ -50,6 +50,9 @@ function frag_face(V, EV, FE, sp_idx, sigma)
     end
     nvsize = size(nV, 1)
     nV = [nV zeros(nvsize) ones(nvsize)]*inv(M)[:, 1:3] ## ????
+	#@show nV
+	#@show nEV
+	#@show nFE
     return nV, nEV, nFE
 end
 
@@ -225,13 +228,45 @@ function spatial_arrangement(
 	# face subdivision
 	rV, rcopEV, rcopFE = Lar.Arrangement.spatial_arrangement_1( V, copEV, copFE, multiproc ) # copFE global
 	@show rV;
-	@show findnz(rcopEV);
-	@show findnz(rcopFE);
+	@show findnz(rcopEV)
+	@show findnz(rcopFE)
 
 	bicon_comps = Lar.Arrangement.biconnected_components(rcopEV)
-	@show bicon_comps;
+	#@show bicon_comps;
 	#W,bicon_comps = Lar.biconnectedComponent((W,EV))
 	#@error "comps# = $(length(bicon_comps))"
 	# 3-complex and containment graph
+	check_odd_elements_columns_CSC(rcopFE)
 	rV, rEV, rFE, rCF = Lar.Arrangement.spatial_arrangement_2(rV, rcopEV, rcopFE)#ricostruzione delle 3-celle
+	#@show rV
+	#@show rEV
+	#@show rCF
+end
+
+function check_odd_elements_columns_CSC(A::SparseMatrixCSC)#test HOMEWORK2
+	sleep_time = 5 #seconds
+	temp = 0
+	result = []
+	for i in range(1,length=size(A,2))
+		push!(result, temp)
+		temp = 0
+		for j in range(1, length=size(A,1))
+	        temp+=abs(A[j,i])
+		end
+	#println(temp)#show column sums
+	end
+	count = 0
+	for k in result
+		if isodd(k)
+			count+=1
+		end
+	end
+	if count!=0
+		println("//////////////////////////////////////////////////////////////////////////////////////////////////////////")
+		println("CHECKING COLUMNS WITH AN ODD NUMBER OF ELEMENTS")
+		println("WARNING, THE MATRIX CONTAINS $count COLUMNS WITH AN ODD NUMBER OF ELEMENTS")
+		println("the execution will sleep for $sleep_time seconds")
+		println("//////////////////////////////////////////////////////////////////////////////////////////////////////////")
+		sleep(sleep_time)
+	end
 end

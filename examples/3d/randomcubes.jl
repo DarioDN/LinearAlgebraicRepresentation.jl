@@ -8,22 +8,22 @@ store = []
 scaling = .85
 V,(VV,EV,FV,CV) = Lar.cuboid([0.25,0.25,0.25],true,[-0.25,-0.25,-0.25])
 mybox = (V,CV,FV,EV)
-for k=1:25
+for k=1:10
 	size = rand()*scaling
 	scale = Lar.s(size,size,size)
 	transl = Lar.t(rand(3)...)
 	alpha = 2*pi*rand()
 	rx = Lar.r(alpha,0,0); ry = Lar.r(0,alpha,0); rz = Lar.r(0,0,alpha)
 	rot = rx * ry * rz
-	s = Lar.Struct([ transl, scale, rot, mybox ])
-	push!(store, Lar.struct2lar(s))
+	str = Lar.Struct([ transl, scale, rot, mybox ])
+	push!(store, Lar.struct2lar(str))
 end
 
-s = Lar.Struct(store)
-V,CV,FV,EV = Lar.struct2lar(s)
+str = Lar.Struct(store)
+V,CV,FV,EV = Lar.struct2lar(str)
 # V = Plasm.normalize3D(V) TODO:  solve MethodError bug
 
-#GL.VIEW([ GL.GLPol(V,CV, GL.COLORS[1]) ]);
+GL.VIEW([ GL.GLPol(V,CV, GL.COLORS[1]) ]);
 
 #preparazione dati
 cop_EV = Lar.coboundary_0(EV::Lar.Cells);#stessi dati ma come matrice sparsa
@@ -38,8 +38,8 @@ V, copEV, copFE, copCF = Lar.Arrangement.spatial_arrangement(
 triangulated_faces = Lar.triangulate2D(V, [copEV, copFE])
 FVs = convert(Array{Lar.Cells}, triangulated_faces)
 V = convert(Lar.Points, V')
-GL.VIEW( GL.GLExplode(V,FVs,1.5,1.5,1.5,99,1) );
+#GL.VIEW( GL.GLExplode(V,FVs,1.5,1.5,1.5,99,1) );
 
 
 EVs = Lar.FV2EVs(copEV, copFE) # polygonal face fragments
-GL.VIEW( GL.GLExplode(V,EVs,1.5,1.5,1.5,99,1) );
+#GL.VIEW( GL.GLExplode(V,EVs,1.5,1.5,1.5,99,1) );
