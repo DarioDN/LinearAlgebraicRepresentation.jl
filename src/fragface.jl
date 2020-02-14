@@ -12,24 +12,13 @@ function face_mapping( V, FV, sigma, err=10e-8 )
 	# compute affinely independent triple
 	n = length(vs)
 	succ(i) = i % n + 1
-	#@show(V[:,vs[succ(i)]] - V[:,vs[i]])
-	#@show typeof(V[:,vs[succ(i)]] - V[:,vs[i]])
-	M = V[:,vs[succ(i)]] - V[:,vs[i]]
-	N = V[:,vs[succ(succ(i))]] - V[:,vs[i]]
-	#m = M[:,:]
-	#n = N[:,:]
-	#@show m
-	#@show n
-	a = LinearAlgebra.normalize(V[:,vs[succ(i)]] - V[:,vs[i]])#modificata per utilizzare normalize di LinearAlgebra
-	#a = Lar.normalize(m)
-	b = LinearAlgebra.normalize(V[:,vs[succ(succ(i))]] - V[:,vs[i]])#modificata per utilizzare normalize di LinearAlgebra
-	#b = Lar.normalize2(n)
-	c = cross(a,b)
-	@show c
+	a = LinearAlgebra.normalize(V[:,vs[succ(i)]] - V[:,vs[i]]) # Lar.normalize
+	b = LinearAlgebra.normalize(V[:,vs[succ(succ(i))]] - V[:,vs[i]]) # Lar.normalize
+	c = LinearAlgebra.cross(a,b)
 	while (-err < det([a b c]) < err)
 		i += 1
-		a = LinearAlgebra.normalize(V[:,vs[succ(i)]] - V[:,vs[i]])#modificata per utilizzare normalize di LinearAlgebra
-		b = LinearAlgebra.normalize(V[:,vs[succ(succ(i))]] - V[:,vs[i]])#modificata per utilizzare normalize di LinearAlgebra
+		a = LinearAlgebra.normalize(V[:,vs[succ(i)]] - V[:,vs[i]])
+		b = LinearAlgebra.normalize(V[:,vs[succ(succ(i))]] - V[:,vs[i]])
 		c = LinearAlgebra.cross(a,b)
 	end
 	# sigma translation
@@ -125,6 +114,7 @@ function sigma_intersect(V, EV, FE, sigma, Q, bigpi)
 	# compute z_lines
 	c = collect
 	z0_lines = [[[c(ps)[k] c(ps)[k+1]] for k=1:2:(length(ps)-1)] for ps in facepoints]
+
 	# intersecting lines upload in linestore
 	linestore = [[Z[:,v1] Z[:,v2]] for (v1,v2) in sigma_lines]
 	if z0_lines != []
