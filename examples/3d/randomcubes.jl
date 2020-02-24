@@ -8,7 +8,7 @@ store = [];
 scaling = 1.05;
 V,(VV,EV,FV,CV) = Lar.cuboid([0.25,0.25,0.25],true,[-0.25,-0.25,-0.25]);
 mybox = (V,CV,FV,EV);
-for k=1:15
+for k=1:5
 	size = rand()*scaling
 	scale = Lar.s(size,size,size)
 	transl = Lar.t(rand(3)...)
@@ -35,23 +35,36 @@ open("/tmp/lar.txt", "w") do f
 	write(f, "EV = $EV\n\n")
 	close(f)
 end
-
 GL.VIEW([ GL.GLPol(V,CV, GL.COLORS[1]) ]);
 
-
+# @show EV
+# @show size(EV)
 cop_EV = Lar.coboundary_0(EV::Lar.Cells);
+# @show cop_EV
+# @show size(cop_EV)
+
+# @show size(V)
+# @show size(FV)
+# @show size(EV)
 cop_FE = Lar.coboundary_1(V, FV::Lar.Cells, EV::Lar.Cells);
+# @show cop_FE
+# @show size(cop_FE)
+
 W = convert(Lar.Points, V');#cobordo 1
 
 V, copEV, copFE, copCF = Lar.Arrangement.spatial_arrangement(
 	W::Lar.Points, cop_EV::Lar.ChainOp, cop_FE::Lar.ChainOp);
-
-
+# println("||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||")
+# @show V
+# @show copEV
+# @show copFE
+# @show copCF
+# println("||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||")
 triangulated_faces = Lar.triangulate2D(V, [copEV, copFE]);
 FVs = convert(Array{Lar.Cells}, triangulated_faces);
 V = convert(Lar.Points, V');
-GL.VIEW( GL.GLExplode(V,FVs,1.5,1.5,1.5,99,1) );
+#GL.VIEW( GL.GLExplode(V,FVs,1.5,1.5,1.5,99,1) );
 
 
 EVs = Lar.FV2EVs(copEV, copFE); # polygonal face fragments
-GL.VIEW( GL.GLExplode(V,EVs,1.5,1.5,1.5,99,1) );
+#GL.VIEW( GL.GLExplode(V,EVs,1.5,1.5,1.5,99,1) );
