@@ -622,7 +622,7 @@ function planar_arrangement(
 #Planar_arrangement_2
 	V,copEV,FE=Lar.Arrangement.planar_arrangement_2(V,copEV,bicon_comps,edge_map,sigma)
     println("TEST EULERO PLANAR INIZIO")
-    test_eulero(V,copEV, FE)
+    test_eulero(V,copEV, FE,2)
     test_eulero2(V,copEV, FE)
     println("TEST EULERO PLANAR FINE")
 	if (return_edge_map)
@@ -632,7 +632,7 @@ function planar_arrangement(
 	end
 end
 
-function test_eulero(V, copEV, FE)
+function test_eulero(V, copEV, FE, dim)
 #    vertex, edges, faces = 0
     if !isempty(V)
         # @show V
@@ -659,15 +659,7 @@ function test_eulero(V, copEV, FE)
         println("WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     end
     bc=size(biconnected_components(copEV))[1]
-    if ((vertex-edges+faces)==bc)
-        println("EULERIAN TEST PASSED-->$(vertex-edges+faces) BICON COMPS==$(bc)")
-    else
-        println("EULERIAN TEST FAILED")
-        println("WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        println("result = $(vertex-edges+faces), bc==$(bc)")
-        println("vertex = $(vertex),edges = $(edges),faces = $(faces),  bc==$(bc)")
-        sleep(5)
-    end
+    println("EULERIAN CHARACTERISTIC-->$(vertex-edges+faces) BICON COMPS==$(bc) VERTEX = $(vertex) EDGES = $(edges) FACES = $(faces)")
 end
 
 function test_eulero2(V, copEV, FE)

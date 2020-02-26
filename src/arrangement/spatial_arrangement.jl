@@ -185,10 +185,9 @@ function spatial_arrangement_1(
         for sigma in 1:fs_num
             println("\n",sigma, "/", fs_num)
             nV, nEV, nFE = Lar.Arrangement.frag_face(V, copEV, copFE, sp_idx, sigma)
-			println("TEST EULERO SPATIAL 3 START")
-			test_eulero(nV, nEV, nFE)
+			println("TEST EULERO SPATIAL FRAG FACE")
+			test_eulero(nV, nEV, nFE,3)
 			test_eulero2(nV, nEV, nFE)
-			println("TEST EULERO SPATIAL 3 END")
 # 			v = size(nV,1); e = nEV.m; f = nFE.m
 # @show v-e+f
 # 			if v-e+f > 1
@@ -201,10 +200,9 @@ function spatial_arrangement_1(
 			#nV, nEV, nFE = Lar.fragface(V, copEV, copFE, sp_idx, sigma)
 			nV = convert(Lar.Points, nV)
             a,b,c = Lar.skel_merge( rV,rEV,rFE,  nV,nEV,nFE )
-			println("TEST EULERO SPATIAL 1 START")
-			test_eulero(a, b, c)
+			println("TEST EULERO SPATIAL SKEL MERGE")
+			test_eulero(a, b, c,3)
 			test_eulero2(a, b, c)
-			println("TEST EULERO SPATIAL 1 END")
             rV=a;  rEV=b;  rFE=c
         end
     end
@@ -271,10 +269,9 @@ function spatial_arrangement(
 	println("\nSparseArrays.sparse($(SparseArrays.findnz(rcopEV)))")
 	println("\nSparseArrays.sparse($(SparseArrays.findnz(rcopFE)))")
 	check_odd_elements_columns_CSC(rcopFE)
-	println("TEST EULERO SPATIAL 2 START")
-	test_eulero(rV, rcopEV, rcopFE)
+	println("TEST EULERO AFTER SPATIAL ARRANGEMENT")
+	test_eulero(rV, rcopEV, rcopFE,3)
 	test_eulero2(rV, rcopEV, rcopFE)
-	println("TEST EULERO SPATIAL 2 END")
 	rV, rEV, rFE, rCF = Lar.Arrangement.spatial_arrangement_2(rV, rcopEV, rcopFE)
 end
 
