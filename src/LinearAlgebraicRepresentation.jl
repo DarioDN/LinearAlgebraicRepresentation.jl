@@ -110,6 +110,8 @@ module LinearAlgebraicRepresentation
    include("./svg2lar.jl")
    include("./bool3d.jl")
    include("./bool2d.jl")
+   include("./check_odd_elements_columns_CSC.jl")
+   include("./topological_invariants.jl")
 
    include("./arrangement/arrangement.jl")
    #planar_arrangement_1 = Arrangement.planar_arrangement_1

@@ -591,18 +591,10 @@ function planar_arrangement(
         sigma::Lar.Chain=spzeros(Int8, 0),
         return_edge_map::Bool=false,
         multiproc::Bool=false)
-        # println("1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")
-        # @show V
-        # @show copEV
-        # println("1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")
 
-#planar_arrangement_1
+    #planar_arrangement_1
 	V,copEV,sigma,edge_map=Lar.Arrangement.planar_arrangement_1(V,copEV,sigma,return_edge_map,multiproc)
-        # println("2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222")
-        # @show V
-        # @show copEV
-        # println("2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222")
-# cleandecomposition
+    # cleandecomposition
 	if sigma.n > 0
 		V,copEV=Lar.Arrangement.cleandecomposition(V, copEV, sigma, edge_map)
 	end
@@ -619,109 +611,15 @@ function planar_arrangement(
     	    return (nothing, nothing, nothing)
     	end
 	end
-#Planar_arrangement_2
+    #Planar_arrangement_2
 	V,copEV,FE=Lar.Arrangement.planar_arrangement_2(V,copEV,bicon_comps,edge_map,sigma)
-    println("TEST EULERO PLANAR INIZIO")
+    println("TEST EULERO PLANAR START")
     test_eulero(V,copEV, FE,2)
     test_eulero2(V,copEV, FE)
-    println("TEST EULERO PLANAR FINE")
+    println("TEST EULERO PLANAR END")
 	if (return_edge_map)
 	     return V, copEV, FE, edge_map
 	else
 	     return V, copEV, FE
 	end
-end
-
-function test_eulero(V, copEV, FE, dim)
-#    vertex, edges, faces = 0
-    if !isempty(V)
-        # @show V
-        # @show size(V)
-        # @show size(V)[1]
-        vertex=size(V)[1]
-    else
-        println("WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    end
-    if !isempty(copEV)
-        # @show copEV
-        # @show size(copEV)
-        # @show size(copEV)[1]
-        edges=size(copEV)[1]
-    else
-        println("WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    end
-    if !isempty(FE)
-        # @show FE
-        # @show size(FE)
-        # @show size(FE)[1]
-        faces = size(FE)[1]
-    else
-        println("WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    end
-    bc=size(biconnected_components(copEV))[1]
-    println("EULERIAN CHARACTERISTIC-->$(vertex-edges+faces) BICON COMPS==$(bc) VERTEX = $(vertex) EDGES = $(edges) FACES = $(faces)")
-end
-
-function test_eulero2(V, copEV, FE)
-    edges=Set{Int64}()
-    vertices=Set{Int64}()
-    counter=0
-    dict=Dict()
-    array=[]
-    array2=[]
-    ciEV=[]
-    ciFE=[]
-    if !isempty(V)
-        # @show V
-        # @show size(V)
-        # @show size(V)[1]
-        vertex=size(V)[1]
-    end
-    if !isempty(copEV)
-        ciEV=findall(!iszero,copEV);
-        #println(ciEV)
-    end
-    if !isempty(FE)
-        ciFE=findall(!iszero,FE);
-        #println(ciFE)
-    end
-    for j in 1:size(FE)[1]
-        for i in ciFE
-            if i[1]==j
-                push!(array,[i[1],i[2]])
-                #dict[i[1]]=i[2]
-            end
-        end
-    end
-    for j in 1:size(copEV)[1]
-        for i in ciEV
-            if i[1]==j
-                push!(array2,[i[1],i[2]])
-                #dict[i[1]]=i[2]
-            end
-        end
-    end
-    prev=0
-    for x in array
-        if prev!=x[1]
-            if length(vertices)!==length(edges)
-                println("WARNING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-            end
-            vertices=Set{Int64}()
-            edges=Set{Int64}()
-        end
-        # println("----------")
-        # println("x==$x")
-        for y in array2
-            if x[2]==y[1]
-                # println("y==$y")
-                push!(edges,y[1])
-                push!(vertices,y[2])
-            end
-
-        end
-        #println("set")
-        #println(set)
-        prev=x[1]
-    end
 end
