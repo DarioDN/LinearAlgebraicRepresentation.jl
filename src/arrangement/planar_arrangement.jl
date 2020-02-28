@@ -1,6 +1,6 @@
 using LinearAlgebraicRepresentation
 Lar = LinearAlgebraicRepresentation
-#using BitFloats
+
 """
     frag_edge_channel(in_chan, out_chan,
         V::Lar.Points, EV::Lar.ChainOp, bigPI)
@@ -47,10 +47,6 @@ function frag_edge(V, EV::Lar.ChainOp, edge_idx::Int, bigPI)
         ev[i, alphas[alphas_keys[i]]] = 1
         ev[i, alphas[alphas_keys[i+1]]] = 1
     end
-    # println("FRAG EDGE START")
-    # @show size(verts)
-    # @show size(ev)
-    # println("FRAG EDGE END")
     return verts, ev
 end
 
@@ -61,13 +57,12 @@ end
 Intersect two 2D edges (`edge1` and `edge2`).
 """
 function intersect_edges(V::Lar.Points, edge1::Lar.Cell, edge2::Lar.Cell)
-    err = 1e-3
+    err = 10e-8
+
     x1, y1, x2, y2 = vcat(map(c->V[c, :], edge1.nzind)...)
     x3, y3, x4, y4 = vcat(map(c->V[c, :], edge2.nzind)...)
-    #ret = Array{Tuple{Lar.Points, BitFloats.Float80}, 1}()
     ret = Array{Tuple{Lar.Points, BigFloat}, 1}()
-    #@show ret
-    #@show typeof(ret)
+
     v1 = [x2-x1, y2-y1];
     v2 = [x4-x3, y4-y3];
     v3 = [x3-x1, y3-y1];
@@ -85,7 +80,6 @@ function intersect_edges(V::Lar.Points, edge1::Lar.Cell, edge2::Lar.Cell)
             if 0 < a < 1
                 push!(ret, (ps[i:i, :], a))
             end
-            #@show ret
         end
     elseif !parallel
         denom = (v2[2])*(v1[1]) - (v2[1])*(v1[2])
@@ -94,12 +88,9 @@ function intersect_edges(V::Lar.Points, edge1::Lar.Cell, edge2::Lar.Cell)
 
         if -err < a < 1+err && -err <= b <= 1+err
             p = [(x1 + a*(x2-x1))  (y1 + a*(y2-y1))]
-#            @show ret
             push!(ret, (p, a))
-#            @show ret
         end
     end
-    #@show ret
     return ret
 end
 
@@ -477,12 +468,6 @@ function planar_arrangement_1( V, copEV,
 		sigma::Lar.Chain=spzeros(Int8, 0),
 		return_edge_map::Bool=false,
 		multiproc::Bool=false)
-
-    # println("------------------------------------------------------------------------------------------------------------------------------")
-    # @show V
-    # @show copEV
-    # println("------------------------------------------------------------------------------------------------------------------------------")
-
 	# data structures initialization
 	edgenum = size(copEV, 1)
 	edge_map = Array{Array{Int, 1}, 1}(undef,edgenum)
@@ -614,8 +599,8 @@ function planar_arrangement(
     #Planar_arrangement_2
 	V,copEV,FE=Lar.Arrangement.planar_arrangement_2(V,copEV,bicon_comps,edge_map,sigma)
     println("TEST EULERO PLANAR START")
-    test_eulero(V,copEV, FE,2)
-    test_eulero2(V,copEV, FE)
+    Lar.test_eulero(V,copEV, FE)
+    Lar.test_eulero2(V,copEV, FE)
     println("TEST EULERO PLANAR END")
 	if (return_edge_map)
 	     return V, copEV, FE, edge_map

@@ -24,6 +24,8 @@ println("AFTER ARRANGMENT")
 @show size(V)
 @show EV
 @show size(EV)
+@show EV
+@show size(EV)
 # compute containment graph of components
 bicon_comps = Lar.Arrangement.biconnected_components(copEV)
 
@@ -49,10 +51,3 @@ GL.VIEW(GL.GLExplode(V,FVs,1.2,1.2,1.2,99,1));
 EVs = Lar.FV2EVs(copEV, copFE)
 EVs = convert(Array{Array{Array{Int64,1},1},1}, EVs)
 GL.VIEW(GL.GLExplode(V,EVs,1.2,1.2,1.2,1,1));
-
-#TEST EULERO PLANAR INIZIO
-#EULERIAN TEST FAILED
-#WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#result = 7, bc==8
-#vertex = 44,edges = 49,faces = 12,  bc==8
-#TEST EULERO PLANAR FINE

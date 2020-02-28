@@ -186,8 +186,8 @@ function spatial_arrangement_1(
             println("\n",sigma, "/", fs_num)
             nV, nEV, nFE = Lar.Arrangement.frag_face(V, copEV, copFE, sp_idx, sigma)
 			println("TEST EULERO SPATIAL FRAG FACE")
-			test_eulero(nV, nEV, nFE,3)
-			test_eulero2(nV, nEV, nFE)
+			Lar.test_eulero(nV, nEV, nFE)
+			Lar.test_eulero2(nV, nEV, nFE)
 # 			v = size(nV,1); e = nEV.m; f = nFE.m
 # @show v-e+f
 # 			if v-e+f > 1
@@ -201,8 +201,8 @@ function spatial_arrangement_1(
 			nV = convert(Lar.Points, nV)
             a,b,c = Lar.skel_merge( rV,rEV,rFE,  nV,nEV,nFE )
 			println("TEST EULERO SPATIAL SKEL MERGE")
-			test_eulero(a, b, c,3)
-			test_eulero2(a, b, c)
+			Lar.test_eulero(a, b, c)
+			Lar.test_eulero2(a, b, c)
             rV=a;  rEV=b;  rFE=c
         end
     end
@@ -268,9 +268,9 @@ function spatial_arrangement(
 	println("******")
 	println("\nSparseArrays.sparse($(SparseArrays.findnz(rcopEV)))")
 	println("\nSparseArrays.sparse($(SparseArrays.findnz(rcopFE)))")
-	check_odd_elements_columns_CSC(rcopFE)
+	Lar.check_odd_elements_columns_CSC(rcopFE)
 	println("TEST EULERO AFTER SPATIAL ARRANGEMENT")
-	test_eulero(rV, rcopEV, rcopFE,3)
-	test_eulero2(rV, rcopEV, rcopFE)
+	Lar.test_eulero(rV, rcopEV, rcopFE)
+	Lar.test_eulero2(rV, rcopEV, rcopFE)
 	rV, rEV, rFE, rCF = Lar.Arrangement.spatial_arrangement_2(rV, rcopEV, rcopFE)
 end

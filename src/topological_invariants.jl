@@ -1,20 +1,20 @@
-function test_eulero(V, copEV, FE, dim)
+function test_eulero(V, copEV, FE)
     if !isempty(V)
-        vertex=size(V)[1]
+        vertex=size(V,1)
     else
         println("WARNING!!! V matrix is empty!!!")
     end
     if !isempty(copEV)
-        edges=size(copEV)[1]
+        edges=size(copEV,1)
     else
         println("WARNING!!! EV matrix is empty!!!")
     end
     if !isempty(FE)
-        faces = size(FE)[1]
+        faces = size(FE,1)
     else
         println("WARNING!!! FE matrix is empty!!!")
     end
-    bc=size(biconnected_components(copEV))[1]
+    bc=size(Lar.Arrangement.biconnected_components(copEV))[1]
     println("EULERIAN CHARACTERISTIC-->$(vertex-edges+faces) BICON COMPS==$(bc) VERTEX = $(vertex) EDGES = $(edges) FACES = $(faces)")
 end
 

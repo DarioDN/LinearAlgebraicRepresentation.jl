@@ -23,3 +23,10 @@ sixtetra=Lar.Struct([ threetetra ,Lar.r(0,π,0)*Lar.r(0,0,853π/1024), threetetr
 finaltetra = Lar.Struct([ sixtetra ])
 V,EV,FV,CV = Lar.struct2lar(finaltetra)
 GL.VIEW([ GL.GLGrid(V,FV, GL.Point4d(1,1,1,0.1)) ,GL.GLFrame]);
+
+cop_EV = Lar.coboundary_0(EV::Lar.Cells);
+cop_FE = Lar.coboundary_1(V, FV::Lar.Cells, EV::Lar.Cells);
+W = convert(Lar.Points, V');#cobordo 1
+
+V, copEV, copFE, copCF = Lar.Arrangement.spatial_arrangement(
+	W::Lar.Points, cop_EV::Lar.ChainOp, cop_FE::Lar.ChainOp);
