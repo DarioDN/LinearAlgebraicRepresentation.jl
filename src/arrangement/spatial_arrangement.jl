@@ -254,11 +254,14 @@ function spatial_arrangement(
 		copFE::Lar.ChainOp, multiproc::Bool=false)
 
 	# face subdivision
+	@show V;
+	@show findnz(copEV);
+ 	@show findnz(copFE);
 	rV, rcopEV, rcopFE = Lar.Arrangement.spatial_arrangement_1( V,copEV,copFE,multiproc )
 
-# @show rV;
-# @show findnz(rcopEV);
-# @show findnz(rcopFE);
+	# @show rV;
+	# @show findnz(rcopEV);
+	# @show findnz(rcopFE);
 
 	bicon_comps = Lar.Arrangement.biconnected_components(rcopEV)
 	#@show bicon_comps;

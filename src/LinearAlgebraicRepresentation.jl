@@ -113,6 +113,9 @@ module LinearAlgebraicRepresentation
    include("../test/check_odd_elements_columns_CSC.jl")
    include("./topological_invariants.jl")
    include("./octahedron.jl")
+   include("./octahemioctahedron_prototype.jl")
+   include("./cubohemioctahedron_prototype.jl")
+   include("./tetramihexahedron_prototype.jl")
 
    include("./arrangement/arrangement.jl")
    #planar_arrangement_1 = Arrangement.planar_arrangement_1

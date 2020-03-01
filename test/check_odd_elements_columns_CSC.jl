@@ -1,6 +1,8 @@
 using LinearAlgebraicRepresentation
 Lar = LinearAlgebraicRepresentation
-
+"""
+This function check the presence of columns with an odd number of elements equal to 1 on the coboundary 1 matrix
+"""
 function check_odd_elements_columns_CSC(A::Lar.SparseMatrixCSC)#test HOMEWORK2
 	sleep_time = 5 #seconds
 	temp = 0
