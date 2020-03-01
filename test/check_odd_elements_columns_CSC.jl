@@ -1,4 +1,7 @@
-function check_odd_elements_columns_CSC(A::SparseMatrixCSC)#test HOMEWORK2
+using LinearAlgebraicRepresentation
+Lar = LinearAlgebraicRepresentation
+
+function check_odd_elements_columns_CSC(A::Lar.SparseMatrixCSC)#test HOMEWORK2
 	sleep_time = 5 #seconds
 	temp = 0
 	result = []

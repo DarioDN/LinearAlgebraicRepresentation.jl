@@ -23,9 +23,9 @@ println("AFTER ARRANGMENT")
 @show V
 @show size(V)
 @show EV
-@show size(EV)
-@show EV
-@show size(EV)
+@show size(copEV)
+@show copFE
+@show size(copFE)
 # compute containment graph of components
 bicon_comps = Lar.Arrangement.biconnected_components(copEV)
 
