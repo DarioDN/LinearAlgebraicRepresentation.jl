@@ -1,4 +1,7 @@
-function test_eulero(V, copEV, FE)
+"""
+Calculate the euler characteristic of solid, working on V, copEV, copFE matrices
+"""
+function test_eulero(V, copEV, copFE)
     if !isempty(V)
         vertex=size(V,1)
     else
@@ -7,18 +10,20 @@ function test_eulero(V, copEV, FE)
     if !isempty(copEV)
         edges=size(copEV,1)
     else
-        println("WARNING!!! EV matrix is empty!!!")
+        println("WARNING!!! copEV matrix is empty!!!")
     end
-    if !isempty(FE)
-        faces = size(FE,1)
+    if !isempty(copFE)
+        faces = size(copFE,1)
     else
-        println("WARNING!!! FE matrix is empty!!!")
+        println("WARNING!!! copFE matrix is empty!!!")
     end
     bc=size(Lar.Arrangement.biconnected_components(copEV))[1]
     println("EULERIAN CHARACTERISTIC-->$(vertex-edges+faces) BICON COMPS==$(bc) VERTEX = $(vertex) EDGES = $(edges) FACES = $(faces)")
 end
-
-function test_eulero2(V, copEV, FE)
+"""
+check the euler characteristic of solid for a single face at time, working on V, copEV, copFE matrices
+"""
+function test_eulero_face4face(V, copEV, copFE)
     edges=Set{Int64}()
     vertices=Set{Int64}()
     counter=0
@@ -33,10 +38,10 @@ function test_eulero2(V, copEV, FE)
     if !isempty(copEV)
         ciEV=findall(!iszero,copEV);
     end
-    if !isempty(FE)
-        ciFE=findall(!iszero,FE);
+    if !isempty(copFE)
+        ciFE=findall(!iszero,copFE);
     end
-    for j in 1:size(FE)[1]
+    for j in 1:size(copFE)[1]
         for i in ciFE
             if i[1]==j
                 push!(array,[i[1],i[2]])

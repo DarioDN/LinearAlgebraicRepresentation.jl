@@ -4,6 +4,7 @@ GL = ViewerGL
 using LinearAlgebraicRepresentation
 Lar = LinearAlgebraicRepresentation
 
+#Test spatial_arrangement on octahemioctahedron DEBUG
 octahemioctahedron = Lar.octahemioctahedron()
 V,EV,FV,CV = Lar.struct2lar(octahemioctahedron)
 GL.VIEW([ GL.GLGrid(V,FV, GL.Point4d(1,1,1,0.1))]);

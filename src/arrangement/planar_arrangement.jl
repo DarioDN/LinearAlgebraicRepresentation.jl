@@ -600,7 +600,7 @@ function planar_arrangement(
 	V,copEV,FE=Lar.Arrangement.planar_arrangement_2(V,copEV,bicon_comps,edge_map,sigma)
     println("TEST EULERO PLANAR START")
     Lar.test_eulero(V,copEV, FE)
-    Lar.test_eulero2(V,copEV, FE)
+    Lar.test_eulero_face4face(V,copEV, FE)
     println("TEST EULERO PLANAR END")
 	if (return_edge_map)
 	     return V, copEV, FE, edge_map

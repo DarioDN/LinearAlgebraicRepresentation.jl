@@ -115,7 +115,7 @@ module LinearAlgebraicRepresentation
    include("./octahedron.jl")
    include("./octahemioctahedron_prototype.jl")
    include("./cubohemioctahedron_prototype.jl")
-   include("./tetramihexahedron_prototype.jl")
+   include("./tetramihexahedron.jl")
 
    include("./arrangement/arrangement.jl")
    #planar_arrangement_1 = Arrangement.planar_arrangement_1

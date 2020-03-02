@@ -4,11 +4,11 @@ GL = ViewerGL
 using LinearAlgebraicRepresentation
 Lar = LinearAlgebraicRepresentation
 
-#Octahedron
+#Octahedron DEBUG
 octahedron = Lar.octahedron(1)
 V,EV,FV,CV = Lar.struct2lar(octahedron)
 GL.VIEW([ GL.GLGrid(V,FV), GL.GLFrame]);
-EV=collect(Set(EV))
+#EV=collect(Set(EV))
 cop_EV = Lar.coboundary_0(EV::Lar.Cells);
 cop_FE = Lar.coboundary_1(V, FV::Lar.Cells, EV::Lar.Cells);
 
